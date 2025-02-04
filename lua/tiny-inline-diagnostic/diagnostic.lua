@@ -145,6 +145,7 @@ local function apply_virtual_texts(opts, event)
 		extmarks.clear(event.buf)
 		return
 	end
+	diagnostics = vim.deepcopy(diagnostics, true)
 
 	-- Process diagnostics
 	local filtered_diags = filter_diagnostics(opts, event, diagnostics)
