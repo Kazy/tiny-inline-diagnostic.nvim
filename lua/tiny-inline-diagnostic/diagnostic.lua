@@ -21,12 +21,12 @@ local attached_buffers = {}
 
 local function enable()
 	M.enabled = true
-	vim.api.nvim_exec_autocmds("User", { pattern = USER_EVENT })
+	vim.api.nvim_exec_autocmds("User", { pattern = USER_EVENT_THROTTLED })
 end
 
 local function disable()
 	M.enabled = false
-	vim.api.nvim_exec_autocmds("User", { pattern = USER_EVENT })
+	vim.api.nvim_exec_autocmds("User", { pattern = USER_EVENT_THROTTLED })
 end
 
 -- Diagnostic filtering functions
@@ -61,10 +61,10 @@ end
 ---@return table
 function M.filter_diags_under_cursor(opts, buf, diagnostics)
 	if
-		not vim.api.nvim_buf_is_valid(buf)
-		or vim.api.nvim_get_current_buf() ~= buf
-		or not diagnostics
-		or #diagnostics == 0
+	    not vim.api.nvim_buf_is_valid(buf)
+	    or vim.api.nvim_get_current_buf() ~= buf
+	    or not diagnostics
+	    or #diagnostics == 0
 	then
 		return {}
 	end
@@ -132,8 +132,8 @@ local function apply_virtual_texts(opts, event)
 	end
 
 	if
-		not M.user_toggle_state
-		or not (M.enabled and vim.diagnostic.is_enabled() and vim.api.nvim_buf_is_valid(event.buf))
+	    not M.user_toggle_state
+	    or not (M.enabled and vim.diagnostic.is_enabled() and vim.api.nvim_buf_is_valid(event.buf))
 	then
 		extmarks.clear(event.buf)
 		return
@@ -166,11 +166,13 @@ local function apply_virtual_texts(opts, event)
 
 			if lnum == cursor_line then
 				virt_lines, offset, need_to_be_under =
-					virtual_text_forge.from_diagnostics(opts, diags, diagnostic_pos, event.buf)
+				    virtual_text_forge.from_diagnostics(opts, diags, diagnostic_pos, event.buf)
 			else
-				local chunks = chunk_utils.get_chunks(opts, diags, 1, diagnostic_pos[1], cursor_line, event.buf)
+				local chunks = chunk_utils.get_chunks(opts, diags, 1, diagnostic_pos[1], cursor_line,
+					event.buf)
 				local max_width = chunk_utils.get_max_width_from_chunks(chunks.chunks)
-				virt_lines, offset, need_to_be_under = virtual_text_forge.from_diagnostic(opts, chunks, 1, max_width, 1)
+				virt_lines, offset, need_to_be_under = virtual_text_forge.from_diagnostic(opts, chunks, 1,
+					max_width, 1)
 			end
 
 			table.insert(diags_dims, { lnum, #virt_lines })
