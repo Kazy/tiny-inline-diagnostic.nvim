@@ -373,7 +373,7 @@ function M.set_diagnostic_autocmds(opts)
 
 			setup_buffer_autocmds(autocmd_ns, opts, event, throttled_fn)
 			setup_cursor_autocmds(autocmd_ns, opts, event, throttled_fn)
-			setup_mode_change_autocmds(autocmd_ns, event)
+			-- setup_mode_change_autocmds(autocmd_ns, event)
 		end,
 		desc = "Setup diagnostic display system",
 	})
